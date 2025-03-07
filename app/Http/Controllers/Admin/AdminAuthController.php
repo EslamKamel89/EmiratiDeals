@@ -11,7 +11,7 @@ class AdminAuthController extends Controller {
 	}
 	public function login( Request $request ) {
 		if ( auth()->attempt(
-			[ 'email' => $request->email, 'password' => $request->password, 'isAdmin' => 1 ]
+			[ 'email' => $request->email, 'password' => $request->password, 'isadmin' => 1 ]
 		) ) {
 			return redirect()->route( 'admin.dashboard' );
 		}

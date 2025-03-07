@@ -13,7 +13,7 @@ class RedirectAdmin {
 	 * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
 	 */
 	public function handle( Request $request, Closure $next, $quard = null ): Response {
-		if ( auth()->guard( $quard )->check() && auth()->user()->isAdmin ) {
+		if ( auth()->guard( $quard )->check() && auth()->user()->isadmin ) {
 			return redirect()->route( 'admin.dashboard' );
 		}
 		return $next( $request );
