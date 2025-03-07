@@ -29,20 +29,24 @@ Route::middleware( 'auth' )->group( function () {
 } );
 
 //!admin routes
-Route::middleware( [ 'redirectAdmin' ] )
-	->prefix( 'admin' )
+Route::prefix( 'admin' )
 	->group( function () {
-		Route::get( '/login', [ AdminAuthController::class, 'showLoginForm' ] )
-			->name( 'admin.login' );
-		Route::post( '/login', [ AdminAuthController::class, 'login' ] )
-			->name( 'admin.login.post' );
-		Route::post( '/logout', [ AdminAuthController::class, 'logout' ] )
-			->name( 'admin.logout' );
+		Route::middleware( [ 'redirectAdmin' ] )
+			->group( function () {
+				Route::get( '/login', [ AdminAuthController::class, 'showLoginForm' ] )
+					->name( 'admin.login' );
+				Route::post( '/login', [ AdminAuthController::class, 'login' ] )
+					->name( 'admin.login.post' );
+			} );
+		Route::middleware( [ 'auth' ] )->group( function () {
+			Route::post( '/logout', [ AdminAuthController::class, 'logout' ] )
+				->name( 'admin.logout' )->withoutMiddleware( 'redirectAdmin' );
+		} );
+		Route::middleware( [ 'auth', 'admin' ] )
+			->group( function () {
+				Route::get( '/dashboard', [ AdminController::class, 'index' ] )
+					->name( 'admin.dashboard' );
+			} );
 	} );
-Route::middleware( [ 'auth', 'admin' ] )
-	->prefix( 'admin' )
-	->group( function () {
-		Route::get( '/dashboard', [ AdminController::class, 'index' ] )
-			->name( 'admin.dashboard' );
-	} );
+
 require __DIR__ . '/auth.php';
